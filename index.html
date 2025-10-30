@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กองฝึกอบรม กรมทางหลวง - TRD ai Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(255,255,255,0.6)); }
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .chat-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .chat-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .chat-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .chat-header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+        
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            text-align: right;
+        }
+        
+        .message.ai {
+            text-align: left;
+        }
+        
+        .message-content {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .message.ai .message-content {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        .message-image {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-group {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            background: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        
+        .file-input {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .file-input-label:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .send-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .send-button:active {
+            transform: scale(0.95);
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .typing-dots {
+            display: inline-block;
+        }
+        
+        .typing-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .chat-container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .chat-messages {
+                height: 300px;
+            }
+        }
+        
+        .welcome-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 20px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>กองฝึกอบรม กรมทางหลวง</h1>
+            <p>ยินดีต้อนรับสู่พื้นที่ส่วนตัวของฉัน! มาคุยกับน้องเรียนรู้ AIประจำกองฝึกอบรมด้านล่างนี้ - แบ่งปันความคิด ถามคำถาม หรือแค่คุยเป็นเพื่อนก็ได้</p>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>แชทกับ AI เอเจนต์</h2>
+                <p>เพื่อนอัจฉริยะของคุณพร้อมคุยแล้ว!</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message">
+                    👋 สวัสดี ฉันคือน้องเรียนรู้ กองฝึกอบรม. ส่งข้อความหรือแชร์รูปภาพเพื่อเริ่มต้นการสนทนา!
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="message ai">
+                    <div class="message-content">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" class="file-input" accept="image/*">
+                    <label for="fileInput" class="file-input-label" title="อัปโหลดรูปภาพ">
+                        📎
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="พิมพ์ข้อความของคุณ..." maxlength="1000">
+                </div>
+                
+                <button id="sendButton" class="send-button" title="ส่งข้อความ">
+                    ➤
+                </button>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const fileInput = document.getElementById('fileInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        const webhookUrl = 'https://unfrounced-reconstructive-danial.ngrok-free.dev/webhook/12ad1931-947b-4c6e-a868-0e64c9593acc/chat';
+        
+        // Generate unique session ID for this chat session
+        const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        console.log('รหัสเซสชันแชท:', sessionId);
+        
+        let selectedFile = null;
+        
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                // Visual feedback for file selection
+                const label = document.querySelector('.file-input-label');
+                label.style.background = 'rgba(76, 175, 80, 0.3)';
+                label.innerHTML = '✓';
+                setTimeout(() => {
+                    label.style.background = 'rgba(255, 255, 255, 0.2)';
+                    label.innerHTML = '📎';
+                }, 2000);
+            }
+        });
+        
+        // Handle input events
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        sendButton.addEventListener('click', sendMessage);
+        
+        function addMessage(content, isUser = false, imageUrl = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.className = 'message-image';
+                messageContent.appendChild(img);
+                
+                if (content) {
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = content;
+                    messageContent.appendChild(textDiv);
+                }
+            } else {
+                messageContent.textContent = content;
+            }
+            
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            setTimeout(() => {
+                errorMessage.textContent = '';
+            }, 5000);
+        }
+        
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            
+            if (!message && !selectedFile) {
+                return;
+            }
+            
+            // Disable send button
+            sendButton.disabled = true;
+            sendButton.style.opacity = '0.6';
+            
+            try {
+                // Add user message to chat
+                if (selectedFile) {
+                    const imageUrl = URL.createObjectURL(selectedFile);
+                    addMessage(message, true, imageUrl);
+                } else {
+                    addMessage(message, true);
+                }
+                
+                // Clear input
+                chatInput.value = '';
+                
+                // Show typing indicator
+                showTyping();
+                
+                let requestBody;
+                let headers = {};
+                
+                if (selectedFile && message) {
+                    // Both image and text - use FormData
+                    requestBody = new FormData();
+                    requestBody.append('sessionId', sessionId);
+                    requestBody.append('message', message);
+                    requestBody.append('image', selectedFile);
+                    // Don't set Content-Type header, let browser set it with boundary
+                } else if (selectedFile) {
+                    // Only image - use FormData
+                    requestBody = new FormData();
+                    requestBody.append('sessionId', sessionId);
+                    requestBody.append('image', selectedFile);
+                    // Don't set Content-Type header, let browser set it with boundary
+                } else {
+                    // Only text - use JSON
+                    headers['Content-Type'] = 'application/json';
+                    requestBody = JSON.stringify({
+                        sessionId: sessionId,
+                        message: message
+                    });
+                }
+                
+                console.log('ส่งคำขอด้วยรหัสเซสชัน:', sessionId);
+                if (selectedFile) {
+                    console.log('รวมไฟล์รูปภาพ:', selectedFile.name, selectedFile.type);
+                }
+                
+                // Send to webhook
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: requestBody
+                });
+                
+                hideTyping();
+                
+                console.log('สถานะการตอบกลับ:', response.status);
+                
+                if (!response.ok) {
+                    // Try to get error details
+                    let errorDetails = '';
+                    try {
+                        errorDetails = await response.text();
+                        console.error('เนื้อหาการตอบกลับที่ผิดพลาด:', errorDetails);
+                    } catch (e) {
+                        console.error('ไม่สามารถอ่านการตอบกลับที่ผิดพลาดได้');
+                    }
+                    throw new Error(`ข้อผิดพลาด HTTP! สถานะ: ${response.status}. รายละเอียด: ${errorDetails}`);
+                }
+                
+                let responseData;
+                const contentType = response.headers.get('content-type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    const jsonResponse = await response.json();
+                    console.log('การตอบกลับ JSON:', jsonResponse);
+                    
+                    // Extract the actual message from different possible response formats
+                    if (jsonResponse.output) {
+                        responseData = jsonResponse.output;
+                    } else if (jsonResponse.message) {
+                        responseData = jsonResponse.message;
+                    } else if (jsonResponse.response) {
+                        responseData = jsonResponse.response;
+                    } else if (jsonResponse.reply) {
+                        responseData = jsonResponse.reply;
+                    } else if (typeof jsonResponse === 'string') {
+                        responseData = jsonResponse;
+                    } else {
+                        // If it's an object but no recognized field, stringify it nicely
+                        responseData = JSON.stringify(jsonResponse, null, 2);
+                    }
+                } else {
+                    responseData = await response.text();
+                }
+                
+                console.log('การตอบกลับที่ประมวลผลแล้ว:', responseData);
+                
+                // Add AI response
+                addMessage(responseData || 'ฉันได้รับข้อความของคุณแล้ว!', false);
+                
+            } catch (error) {
+                hideTyping();
+                console.error('ข้อผิดพลาดในการส่งข้อความ:', error);
+                showError(`ข้อผิดพลาด: ${error.message}`);
+                addMessage('ขออภัย เกิดข้อผิดพลาดในการประมวลผลคำขอของคุณ กรุณาตรวจสอบคอนโซลเพื่อดูรายละเอียด', false);
+            } finally {
+                // Re-enable send button
+                sendButton.disabled = false;
+                sendButton.style.opacity = '1';
+                
+                // Clear selected file
+                selectedFile = null;
+                fileInput.value = '';
+            }
+        }
+        
+        // Auto-resize chat input
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+        
+        // Welcome animation and session info
+        setTimeout(() => {
+            const welcomeMsg = document.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.style.animation = 'fadeIn 1s ease-out';
+                welcomeMsg.innerHTML = `👋 สวัสดี! ฉันคือเพื่อน AI ของ น้องเรียนรู้ ส่งข้อความหรือแชร์รูปภาพเพื่อเริ่มต้นการสนทนา!<br><small style="opacity: 0.6; font-size: 0.8em;">เซสชัน: ${sessionId}</small>`;
+            }
+        }, 500);
+    </script>
+</body>
+</html>
