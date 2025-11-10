@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>กองฝึกอบรม กรมทางหลวง - TRD ai Chatbot</title>
+    <title>Chat TRD - กองฝึกอบรม</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,7 +14,7 @@
         
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
             min-height: 100vh;
             color: white;
             overflow-x: hidden;
@@ -150,7 +150,7 @@
         }
         
         .message.user .message-content {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             color: white;
         }
         
@@ -210,16 +210,18 @@
             justify-content: center;
             width: 50px;
             height: 50px;
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #10b981, #059669);
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.3rem;
         }
         
         .file-input-label:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #059669, #047857);
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
         }
         
         .send-button {
@@ -227,7 +229,7 @@
             height: 50px;
             border: none;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -239,7 +241,7 @@
         
         .send-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
         }
         
         .send-button:active {
@@ -307,19 +309,19 @@
 <body>
     <div class="container">
         <div class="hero">
-            <h1>กองฝึกอบรม กรมทางหลวง</h1>
-            <p>ยินดีต้อนรับทุกท่านสู่พื้นที่ส่วนตัวของฉัน! มาคุยกับน้องเรียนรู้ ai ประจำกองฝึกอบรม - แบ่งปันข้อมูล ถามคำถาม หรือแค่คุยเป็นเพื่อนก็ได้</p>
+            <h1>Chat TRD</h1>
+            <p>We are ready... LEARN & SHARE TO G😊AL</p>
         </div>
         
         <div class="chat-container">
             <div class="chat-header">
-                <h2>แชทกับ AI เอเจนต์</h2>
+                <h2>Chat TRD</h2>
                 <p>เพื่อนอัจฉริยะของคุณพร้อมคุยแล้ว!</p>
             </div>
             
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-message">
-                    👋 สวัสดี ฉันคือน้องเรียนรู้ ai ประจำกองฝึกอบรม ส่งข้อความหรือแชร์รูปภาพเพื่อเริ่มต้นการสนทนา!
+                    👋 Hello! I'm TRD's AI friend. Send me a message or share an image to get started!
                 </div>
             </div>
             
@@ -339,7 +341,7 @@
                 <div class="file-input-wrapper">
                     <input type="file" id="fileInput" class="file-input" accept="image/*">
                     <label for="fileInput" class="file-input-label" title="อัปโหลดรูปภาพ">
-                        📎
+                        🖼️
                     </label>
                 </div>
                 
@@ -577,7 +579,7 @@
             const welcomeMsg = document.querySelector('.welcome-message');
             if (welcomeMsg) {
                 welcomeMsg.style.animation = 'fadeIn 1s ease-out';
-                welcomeMsg.innerHTML = `👋 สวัสดี! ฉันคือเพื่อน AI ของ น้องเรียนรู้ ส่งข้อความหรือแชร์รูปภาพเพื่อเริ่มต้นการสนทนา!<br><small style="opacity: 0.6; font-size: 0.8em;">เซสชัน: ${sessionId}</small>`;
+                welcomeMsg.innerHTML = `👋 สวัสดี! ฉันคือน้องเรียนรู้ ส่งข้อความหรือแชร์รูปภาพเพื่อเริ่มต้นการสนทนา!<br><small style="opacity: 0.6; font-size: 0.8em;">เซสชัน: ${sessionId}</small>`;
             }
         }, 500);
     </script>
